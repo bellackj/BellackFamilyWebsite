@@ -16,7 +16,7 @@ resource "aws_kms_key" "this" {
 }
 
 resource "aws_kms_key_policy" "this" {
-  key_id = aws_kms_key.this
+  key_id = aws_kms_key.this.id
   policy = data.aws_iam_policy_document.this.json
 }
 
@@ -34,7 +34,7 @@ data "aws_iam_policy_document" "this" {
         join(":", ["arn:aws:iam:", var.account_id, "root"])
       ]
     }
-    resources = [aws_kms_key.this]
+    resources = [aws_kms_key.this.arn]
   }
   statement {
     sid = "Allow specified principals to use the key"
@@ -54,7 +54,7 @@ data "aws_iam_policy_document" "this" {
       type        = "Service"
       identifiers = var.service_principals
     }
-    resources = [aws_kms_key.this]
+    resources = [aws_kms_key.this.arn]
   }
   statement {
     sid = "Allow autoscaling to create and revoke grants"
@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "this" {
       "kms:RevokeGrant"
     ]
     effect    = "Allow"
-    resources = [aws_kms_key.this]
+    resources = [aws_kms_key.this.arn]
     principals {
       type        = "AWS"
       identifiers = var.aws_principals
@@ -79,7 +79,7 @@ data "aws_iam_policy_document" "this" {
 
 resource "aws_kms_alias" "this" {
   name          = join("/", ["alias", var.aws_service_name, "key-alias"])
-  target_key_id = aws_kms_key.this
+  target_key_id = aws_kms_key.this.id
 
   depends_on = [aws_kms_key.this]
 }

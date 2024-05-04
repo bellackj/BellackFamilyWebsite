@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "bf_web_server_files" {
   })
 }
 
-resource "aws_s3_buckey_server_side_encryption_configuration" "bf_bucket_encryption" {
+resource "aws_s3_bucket_server_side_encryption_configuration" "bf_bucket_encryption" {
   bucket = aws_s3_bucket.bf_web_server_files.id
 
   rule {
